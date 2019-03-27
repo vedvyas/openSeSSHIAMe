@@ -1,10 +1,49 @@
 #!/usr/bin/env python3
+'''
+openSeSSHIAMe: allow SSH access to an instance behind the great AWS firewall
+(security group for the instance) for authorized IAM users
 
+Copyright (c) 2019 Ved Vyas
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Usage:
+  openSeSSHIAMe [-v] --config FILENAME
+  openSeSSHIAMe (-h | --help | --version)
+
+Options:
+  --config FILENAME              JSON configuration file to use
+  -v --verbose                   Print additional information
+  -h --help                      Show this screen
+  --version                      Show version
+
+See the README for information on the configuration files and usage.
+'''
+
+from docopt import docopt
 import boto3
 import requests
 
 import copy
 import json
+
+from __about__ import __version__
 
 
 class openSeSSHIAMe:
@@ -120,3 +159,14 @@ class openSeSSHIAMe:
             '''Could not get a unique ID for openSeSSHIAMe to use, check that
             your IAM user has an attached tag with "Key"="openSeSSHIAMe-ID" and
             a unique "Value" among all openSeSSHIAMe users''')
+
+
+if __name__ == '__main__':
+    args = docopt(__doc__, version='openSeSSHIAMe v' + __version__)
+
+    verbose = args.get('--verbose', False)
+    config_filename = args['--config']
+
+    sesame = openSeSSHIAMe(config_filename=config_filename, verbose=verbose)
+    sesame.revoke_existing_ingress_rules()
+    sesame.authorize_ingress_from_current_location()
