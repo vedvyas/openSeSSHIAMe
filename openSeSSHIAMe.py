@@ -14,7 +14,7 @@ class openSeSSHIAMe:
         with open(config_filename, 'r') as config_file:
             self.config = config = json.loads(config_file.read())
 
-        # Check that config contains the necessary entries
+        # TODO: check that config contains the necessary entries
 
         self.session = boto3.Session(
             aws_access_key_id=config['aws_access_key_id'],
