@@ -30,6 +30,10 @@ class openSeSSHIAMe:
 
         ingress_rule_description = self._generate_ingress_rule_description()
 
+        if self.verbose:
+            print('Finding existing ingress rules for '
+                  + ingress_rule_description)
+
         # Build list of existing ingress rules for current openSeSSHIAMe user
         existing_rules = []
         for rule in sec_group['IpPermissions']:
@@ -49,11 +53,15 @@ class openSeSSHIAMe:
                     existing_rule['IpRanges'] = [IP_range]
                     existing_rules.append(existing_rule)
 
+                    if self.verbose:
+                        print('Existing rule:', IP_range)
+
                     break
 
         # Attempt to remove existing ingress rules for current openSeSSHIAMe
         # user
         if len(existing_rules):
+            # TODO: check response
             EC2.revoke_security_group_ingress(
                 GroupId=self.config['security_group_ID'],
                 IpPermissions=existing_rules)
@@ -61,7 +69,15 @@ class openSeSSHIAMe:
     def authorize_ingress_from_current_location(self):
         EC2 = self.session.client('ec2', region_name=self.config['aws_region'])
 
+        IPv4_addr = self._get_public_IPv4_address()
+        ingress_rule_description = self._generate_ingress_rule_description()
+
+        if self.verbose:
+            print('Adding ingress rule from %s for %s' % (
+                IPv4_addr, ingress_rule_description))
+
         # Attempt to authorize ingress on port 22 from current address
+        # TODO: check response
         EC2.authorize_security_group_ingress(
             GroupId=self.config['security_group_ID'],
             IpPermissions=[{
@@ -69,8 +85,8 @@ class openSeSSHIAMe:
                 'FromPort': 22,
                 'ToPort': 22,
                 'IpRanges': [{
-                    'CidrIp': self._get_public_IPv4_address() + '/32',
-                    'Description': self._generate_ingress_rule_description()
+                    'CidrIp': IPv4_addr + '/32',
+                    'Description': ingress_rule_description
                 }]
             }])
 
@@ -88,7 +104,8 @@ class openSeSSHIAMe:
             raise e
 
         raise RuntimeError(
-            'Can not determine public IP address: ' + str(res.status_code))
+            'Can not determine public IP address, status code: '
+            + str(res.status_code))
 
     def _get_openSeSSHIAMe_ID(self):
         IAM = self.session.client('iam')
