@@ -6,7 +6,7 @@ Intro
 
 openSeSSHIAMe (picture Adam Sandler singing "open sesame") allows SSH access to
 an instance behind the great AWS firewall (security group for the instance) for
-authorized users.
+authorized users from their current location.
 
 Given the credentials for an AWS IAM (Identity and Access Management) user, it:
 

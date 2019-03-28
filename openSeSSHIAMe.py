@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 '''
 openSeSSHIAMe: allow SSH access to an instance behind the great AWS firewall
-(security group for the instance) for authorized IAM users
+(security group for the instance) for authorized IAM users from their current
+location
 
 Copyright (c) 2019 Ved Vyas
 
