@@ -1,0 +1,8 @@
+[Unit]
+Description=Run openSeSSHIAMe-oneshot periodically
+
+[Timer]
+OnUnitActiveSec=30min
+
+[Install]
+WantedBy=timers.target

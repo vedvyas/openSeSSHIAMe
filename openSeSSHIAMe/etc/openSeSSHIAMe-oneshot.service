@@ -1,0 +1,15 @@
+[Unit]
+Description=Run openSeSSHIAMe to authorize incoming SSH access to AWS instance from current public IP address
+After=network-online.target
+
+[Service]
+# Customize user and group to run as
+User=foo
+Group=foo
+Type=oneshot
+# Customize path to openSeSSHIAMe and location of config file
+ExecStart=/path/to/openSeSSHIAMe --verbose \
+                                 --config=/path/to/openSeSSHIAMe-config.json
+
+[Install]
+WantedBy=multi-user.target

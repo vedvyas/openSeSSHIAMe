@@ -54,7 +54,9 @@ setup(
     packages=find_packages(),
     package_data={
         'openSeSSHIAMe': ['README.md', 'COPYING',
-                          'etc/openSeSSHIAMe-config.json']
+                          'etc/openSeSSHIAMe-config.json',
+                          'etc/openSeSSHIAMe-oneshot.service',
+                          'etc/openSeSSHIAMe-oneshot.timer']
     },
 
     entry_points={
