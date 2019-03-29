@@ -23,8 +23,8 @@ secure your EC2 instance and AWS account. Feedback, suggested improvements, and
 contributions will be most appreciated. See [Notes](#notes) for known issues
 with the current implementation.
 
-Prerequisites
--------------
+AWS Prerequisites
+-----------------
 
   * An EC2 instance with at least one associated security group that
     openSeSSHIAMe can operate on. It's probably a good idea to keep a dedicated
@@ -52,8 +52,20 @@ Notes
 Requirements
 ------------
 
+  * Python 3+
+  * boto3 (>= 1.9.121)
+  * docopt (>= 0.6.2)
+  * requests (>= 2.21.0)
+
 Installation
 ------------
+
+To install from source, execute the following in the directory containing
+    `setup.py`:
+    `pip install [--user] [--upgrade] .`
+
+To install from `PyPI`:
+    `pip install [--user] [--upgrade] openSeSSHIAMe`
 
 Usage
 -----
@@ -61,14 +73,14 @@ Usage
 TODO
 ----
 
-* If an existing rule for the current public IP address exists, don't revoke
-  and re-authorize it -- just to reduce entries in CloudTrail. However,
-  calls to `DescribeSecurityGroups` and `ListUserTags` are unavoidable.
-* Allow ports other than 22 and multiple ports. Might do this if and when the
-  need arises.
-* Allow for multiple address per IAM user. Ditto.
-* Use PID file to handle concurrent runs for same IAM user.
-* Add option to use IPv6 addresses
+  * If an existing rule for the current public IP address exists, don't revoke
+    and re-authorize it -- just to reduce entries in CloudTrail. However, calls
+    to `DescribeSecurityGroups` and `ListUserTags` are unavoidable.
+  * Allow ports other than 22 and multiple ports. Might do this if and when the
+    need arises.
+  * Allow for multiple address per IAM user. Ditto.
+  * Use PID file to handle concurrent runs for same IAM user.
+  * Add option to use IPv6 addresses.
 
 License
 -------
