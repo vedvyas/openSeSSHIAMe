@@ -44,7 +44,7 @@ import requests
 import copy
 import json
 
-from __about__ import __version__
+from .__about__ import __version__
 
 
 class openSeSSHIAMe:
