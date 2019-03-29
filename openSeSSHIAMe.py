@@ -162,7 +162,7 @@ class openSeSSHIAMe:
             a unique "Value" among all openSeSSHIAMe users''')
 
 
-if __name__ == '__main__':
+def main():
     args = docopt(__doc__, version='openSeSSHIAMe v' + __version__)
 
     verbose = args.get('--verbose', False)
@@ -171,3 +171,7 @@ if __name__ == '__main__':
     sesame = openSeSSHIAMe(config_filename=config_filename, verbose=verbose)
     sesame.revoke_existing_ingress_rules()
     sesame.authorize_ingress_from_current_location()
+
+
+if __name__ == '__main__':
+    main()
