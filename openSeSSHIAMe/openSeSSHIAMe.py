@@ -37,12 +37,13 @@ Options:
 See the README for information on the configuration files and usage.
 '''
 
-from docopt import docopt
-import boto3
-import requests
 
 import copy
 import json
+
+from docopt import docopt
+import boto3
+import requests
 
 from .__about__ import __version__
 
