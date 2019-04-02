@@ -86,47 +86,6 @@ class openSeSSHIAMe:
         # TODO: store EC2 and IAM clients as attributes? Seems like boto3 will
         # deal with expiry of credentials for us.
 
-    def revoke_ingress_rules(self, rules):
-        '''Revoke ingress rules from the security group in the config.
-
-        This method can revoke *any* rules in the security group configured by
-        the current IAM user. Each element of rules -- a rule -- should be
-        structured like an element of "IpPermissions" in the boto3 API. As an
-        example:
-
-        {
-          "FromPort": 22,
-          "IpProtocol": "tcp",
-          "IpRanges": [
-            {
-              "CidrIp": "10.0.0.1/32",
-              "Description": "A description. Take a look at
-                              _generate_ingress_rule_description() to see how
-                              this is used by openSeSSHIAMe."
-            }
-          ],
-          "Ipv6Ranges": [],
-          "PrefixListIds": [],
-          "ToPort": 22,
-          "UserIdGroupPairs": []
-        }
-
-        See the boto3 docs for more details:
-        https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html#EC2.Client.revoke_security_group_ingress
-
-        Args:
-            rules (list): A list of ingress rules to revoke.
-        '''
-        EC2 = self.session.client('ec2', region_name=self.config['aws_region'])
-
-        if not rules:
-            return
-
-        # TODO: check response
-        EC2.revoke_security_group_ingress(
-            GroupId=self.config['security_group_ID'],
-            IpPermissions=rules)
-
     def list_existing_ingress_rules(self):
         '''List existing ingress rules for the current openSeSSHIAMe user.
 
@@ -136,7 +95,29 @@ class openSeSSHIAMe:
         element in the configured security group.
 
         Returns:
-            list: List of rules. See `revoke_ingress_rules` for their format.
+            list: List of rules. Each element of rules -- a rule -- should be
+                structured like an element of `IpPermissions` in the boto3
+                API. As an example:
+
+                {
+                  "FromPort": 22,
+                  "IpProtocol": "tcp",
+                  "IpRanges": [
+                    {
+                      "CidrIp": "10.0.0.1/32",
+                      "Description": "A description. Take a look at
+                                     `_generate_ingress_rule_description()` to
+                                     see how this is used by openSeSSHIAMe."
+                    }
+                  ],
+                  "Ipv6Ranges": [],
+                  "PrefixListIds": [],
+                  "ToPort": 22,
+                  "UserIdGroupPairs": []
+                }
+
+                For more information on the structure of `IpPermissions`, see:
+                https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html#EC2.Client.authorize_security_group_ingress
         '''
         EC2 = self.session.client('ec2', region_name=self.config['aws_region'])
 
@@ -177,6 +158,29 @@ class openSeSSHIAMe:
                     break
 
         return existing_rules
+
+    def revoke_ingress_rules(self, rules):
+        '''Revoke ingress rules from the security group in the config.
+
+        This method can revoke *any* rules in the security group configured by
+        the current IAM user.
+
+        See the boto3 docs for more details about how rules are matched and
+        revoked:
+        https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html#EC2.Client.revoke_security_group_ingress
+
+        Args:
+            rules (list): A list of ingress rules to revoke.
+        '''
+        EC2 = self.session.client('ec2', region_name=self.config['aws_region'])
+
+        if not rules:
+            return
+
+        # TODO: check response
+        EC2.revoke_security_group_ingress(
+            GroupId=self.config['security_group_ID'],
+            IpPermissions=rules)
 
     def authorize_ingress_rules(self, rules):
         '''Authorize ingress rules for security group in configuration.
