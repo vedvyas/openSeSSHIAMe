@@ -83,8 +83,9 @@ class openSeSSHIAMe:
             aws_access_key_id=config['aws_access_key_id'],
             aws_secret_access_key=config['aws_secret_access_key'])
 
-        # TODO: store EC2 and IAM clients as attributes? Seems like boto3 will
-        # deal with expiry of credentials for us.
+        self.IAM = self.session.client('iam')
+        self.EC2 = self.session.client('ec2',
+                                       region_name=self.config['aws_region'])
 
     def list_existing_ingress_rules(self):
         '''List existing ingress rules for the current openSeSSHIAMe user.
@@ -119,9 +120,7 @@ class openSeSSHIAMe:
                 For more information on the structure of `IpPermissions`, see:
                 https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html#EC2.Client.authorize_security_group_ingress
         '''
-        EC2 = self.session.client('ec2', region_name=self.config['aws_region'])
-
-        sec_groups = EC2.describe_security_groups(
+        sec_groups = self.EC2.describe_security_groups(
             GroupIds=[self.config['security_group_ID']])
         assert len(sec_groups['SecurityGroups']) == 1
         sec_group = sec_groups['SecurityGroups'][0]
@@ -172,13 +171,11 @@ class openSeSSHIAMe:
         Args:
             rules (list): A list of ingress rules to revoke.
         '''
-        EC2 = self.session.client('ec2', region_name=self.config['aws_region'])
-
         if not rules:
             return
 
         # TODO: check response
-        EC2.revoke_security_group_ingress(
+        self.EC2.revoke_security_group_ingress(
             GroupId=self.config['security_group_ID'],
             IpPermissions=rules)
 
@@ -189,10 +186,8 @@ class openSeSSHIAMe:
         subsequent tracking of these rules -- that's up to the caller of this
         method.
         '''
-        EC2 = self.session.client('ec2', region_name=self.config['aws_region'])
-
         # TODO: check response
-        EC2.authorize_security_group_ingress(
+        self.EC2.authorize_security_group_ingress(
             GroupId=self.config['security_group_ID'],
             IpPermissions=rules)
 
@@ -252,8 +247,7 @@ class openSeSSHIAMe:
     def _get_openSeSSHIAMe_ID(self):
         '''Get value of IAM tag that describes the current IAM user's
         openSeSSHIAMe ID.'''
-        IAM = self.session.client('iam')
-        IAM_user_tags = IAM.list_user_tags(
+        IAM_user_tags = self.IAM.list_user_tags(
             UserName=self.config['aws_iam_username'])
 
         for tag in IAM_user_tags['Tags']:
