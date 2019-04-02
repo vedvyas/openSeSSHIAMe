@@ -220,7 +220,6 @@ class openSeSSHIAMe:
                 port, IPv4_addr, ingress_rule_description))
 
         # Attempt to authorize ingress on port 22 from current address
-        # TODO: check response
         return {
             'IpProtocol': 'tcp',
             'FromPort': port,
