@@ -83,6 +83,9 @@ class openSeSSHIAMe:
             aws_access_key_id=config['aws_access_key_id'],
             aws_secret_access_key=config['aws_secret_access_key'])
 
+        # TODO: store EC2 and IAM clients as attributes? Seems like boto3 will
+        # deal with expiry of credentials for us.
+
     def revoke_ingress_rules(self, rules):
         '''Revoke ingress rules from the security group in the config.
 
@@ -189,7 +192,7 @@ class openSeSSHIAMe:
             GroupId=self.config['security_group_ID'],
             IpPermissions=rules)
 
-    # TODO: protocol, port range, IPv6, etc.
+    # TODO: accept protocol, port range, IPv6, etc.
     def generate_ingress_rule_for_current_location(self, port):
         '''Generate ingress rule, from current public IP address to the
         specified port, for use with `authorize_ingress_rules`
@@ -268,6 +271,8 @@ def main():
 
     sesame = openSeSSHIAMe(config_filename=config_filename, verbose=verbose)
 
+    # TODO: if the current public IP address is already authorized, filter it
+    # out before revoking and then there's no need to re-authorize it.
     existing_rules = sesame.list_existing_ingress_rules()
     sesame.revoke_ingress_rules(existing_rules)
 
