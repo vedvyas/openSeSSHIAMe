@@ -54,7 +54,7 @@ class openSeSSHIAMe:
     group for a particular IAM user. `openSeSSHIAMe` tracks users through tags
     on each IAM user (with a `Key` of `openSeSSHIAMe-ID`).
 
-    Using the public methods, one can revoke existing rules for an
+    Using the public methods, one can list and revoke existing rules for an
     `openSeSSHIAMe` user (e.g., ingress that was previously authorized from a
     different location). Then one can authorize ingress from the current public
     IPv4 address.
