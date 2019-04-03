@@ -128,8 +128,8 @@ class openSeSSHIAMe:
         ingress_rule_description = self._generate_ingress_rule_description()
 
         if self.verbose:
-            print('Finding existing ingress rules for '
-                  + ingress_rule_description)
+            print('Finding existing ingress rules for %s...' %
+                  ingress_rule_description)
 
         # Build list of existing ingress rules for current openSeSSHIAMe user
         existing_rules = []
@@ -151,7 +151,9 @@ class openSeSSHIAMe:
                     existing_rules.append(existing_rule)
 
                     if self.verbose:
-                        print('Existing rule:', IP_range)
+                        print('Existing rule: access to ports %d--%d from %s' %
+                              (rule['FromPort'], rule['ToPort'],
+                               IP_range['CidrIp']))
 
                     # TODO: might want to drop this break
                     break
