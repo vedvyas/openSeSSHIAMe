@@ -194,12 +194,18 @@ class openSeSSHIAMe:
             IpPermissions=rules)
 
     # TODO: accept protocol, port range, IPv6, etc.
-    def generate_ingress_rule_for_current_location(self, port):
+    def generate_ingress_rule(self, port, IPv4_CIDR=None):
         '''Generate ingress rule, from current public IP address to the
         specified port, for use with `authorize_ingress_rules`
 
         This grabs the current public IPv4 address and uses openSeSSHIAMe's
         bookeeping method to facilitate subsequent tracking of this rule.
+
+        Args:
+            port (int): The port to allow incoming traffic to.
+            IPv4_CIDR (str, optional): If provided, a source IPv4 CIDR range to
+                allow incoming traffic from. Otherwise, the current public IPv4
+                address is used.
 
         Returns:
             dict: A rule to pass to `authorize_ingress_rules`. See
@@ -209,12 +215,14 @@ class openSeSSHIAMe:
             Some exceptions: If the public IP address cannot be determined, or
                 if there is a problem obtaining the openSeSSHIAMe ID.
         '''
-        IPv4_addr = self._get_public_IPv4_address()
+        if not IPv4_CIDR:
+            IPv4_CIDR = self._get_public_IPv4_address() + '/32'
+        # TODO: check that IPv4_CIDR is valid
         ingress_rule_description = self._generate_ingress_rule_description()
 
         if self.verbose:
             print('Generating ingress rule for port %d from %s for %s' % (
-                port, IPv4_addr, ingress_rule_description))
+                port, IPv4_CIDR, ingress_rule_description))
 
         # Attempt to authorize ingress on port 22 from current address
         return {
@@ -222,7 +230,7 @@ class openSeSSHIAMe:
             'FromPort': port,
             'ToPort': port,
             'IpRanges': [{
-                'CidrIp': IPv4_addr + '/32',
+                'CidrIp': IPv4_CIDR,
                 'Description': ingress_rule_description
             }]
         }
@@ -275,7 +283,7 @@ def main():
     existing_rules = sesame.list_existing_ingress_rules()
     sesame.revoke_ingress_rules(existing_rules)
 
-    new_SSH_rule = sesame.generate_ingress_rule_for_current_location(22)
+    new_SSH_rule = sesame.generate_ingress_rule(22)
     sesame.authorize_ingress_rules([new_SSH_rule])
 
 
