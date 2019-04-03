@@ -34,7 +34,8 @@ Options:
   -h --help                      Show this screen
   --version                      Show version
 
-See the README for information on the configuration files and usage.
+See the README for information on the configuration file and usage, as well as
+IMPORTANT ISSUES with openSeSSHIAMe.
 '''
 
 
