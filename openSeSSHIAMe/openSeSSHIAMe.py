@@ -262,6 +262,9 @@ class openSeSSHIAMe:
 
     def _get_public_IPv4_address(self):
         'Get public IPv4 address.'
+        # TODO: use multiple providers to protect against getting an incorrect
+        # address. Only use methods that encrypt in transit. Also see:
+        # https://unix.stackexchange.com/q/22615
         try:
             res = requests.get('https://api.ipify.org')
             if res.status_code == 200:
