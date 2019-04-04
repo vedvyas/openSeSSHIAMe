@@ -63,14 +63,48 @@ Installation
 ------------
 
 To install from source, execute the following in the directory containing
-    `setup.py`:
-    `pip install [--user] [--upgrade] .`
+`setup.py`:
+
+    pip install [--user] [--upgrade] .
 
 To install from `PyPI`:
-    `pip install [--user] [--upgrade] openSeSSHIAMe`
+
+    pip install [--user] [--upgrade] openSeSSHIAMe
 
 Usage
 -----
+
+The openSeSSHIAMe CLI can be executed for oneshot authorization of the user's
+current public IPv4 address:
+
+    openSeSSHIAMe --verbose --config /path/to/config.json
+
+Here, `config.json` should look like `etc/openSeSSHIAMe-config.json`, found in
+this repo and the installed package. It consists of the IAM credentials and
+username for the current openSeSSHIAMe user, the ID of the security group to
+use, and the region the EC2 instance is running in.
+
+openSeSSHIAMe can be run at the time of starting an SSH session, just like
+[port-knockers][1]. One way is using `ProxyCommand` in your SSH client
+config:
+
+    Host foo
+    HostName ...
+    ...
+    ProxyCommand bash -c 'openSeSSHIAMe --verbose --config ...; sleep 1;
+                          exec nc %h %p'
+
+This technique should also work with autossh.
+
+Alternatively (or additionally), a sample systemd service and timer for
+periodic execution are included in `etc/`.
+
+Finally, feel free to import and use the `openSeSSHIAMe` class after installing
+this package:
+
+    from openSeSSHIAMe import openSeSSHIAMe
+    sesame = openSeSSHIAMe(config_filename='...', verbose=True)
+    # See main() in openSeSSHIAMe.py for further usage
 
 TODO
 ----
@@ -89,3 +123,5 @@ License
 
 openSeSSHIAMe is distributed under the terms of the MIT license. Please see
 COPYING.
+
+[1]: https://lzone.de/blog/Port%20Knocking%20And%20SSH%20ProxyCommand
