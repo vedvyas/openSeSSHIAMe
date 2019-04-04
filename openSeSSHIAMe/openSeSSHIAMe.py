@@ -188,7 +188,13 @@ class openSeSSHIAMe:
         This does not use openSeSSHIAMe's bookeeping method to facilitate
         subsequent tracking of these rules -- that's up to the caller of this
         method.
+
+        Args:
+            rules (list): A list of ingress rules to authorize.
         '''
+        if not rules:
+            return
+
         # TODO: check response
         self.EC2.authorize_security_group_ingress(
             GroupId=self.config['security_group_ID'],
