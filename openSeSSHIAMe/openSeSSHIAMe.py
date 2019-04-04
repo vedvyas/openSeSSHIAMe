@@ -177,6 +177,13 @@ class openSeSSHIAMe:
         if not rules:
             return
 
+        if self.verbose:
+            for rule in rules:
+                for IP_range in rule['IpRanges']:
+                    print('Revoking access to ports %d--%d from %s' %
+                          (rule['FromPort'], rule['ToPort'],
+                           IP_range['CidrIp']))
+
         # TODO: check response
         self.EC2.revoke_security_group_ingress(
             GroupId=self.config['security_group_ID'],
@@ -194,6 +201,13 @@ class openSeSSHIAMe:
         '''
         if not rules:
             return
+
+        if self.verbose:
+            for rule in rules:
+                for IP_range in rule['IpRanges']:
+                    print('Authorizing access to ports %d--%d from %s' %
+                          (rule['FromPort'], rule['ToPort'],
+                           IP_range['CidrIp']))
 
         # TODO: check response
         self.EC2.authorize_security_group_ingress(
