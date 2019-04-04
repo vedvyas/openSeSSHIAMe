@@ -23,7 +23,7 @@ setup(
     long_description=open(path.join(here, 'README.md'),
                           encoding='utf-8').read(),
     long_description_content_type='text/markdown',
-    keywords='AWS IAM SSH security-group boto3',
+    keywords='AWS IAM EC2 SSH security-group boto3',
 
     license='MIT',
 
