@@ -48,6 +48,8 @@ Notes
     used by openSeSSHIAMe! This is because `DescribeSecurityGroups` cannot be
     restricted to a particular resource (the security group used by
     openSeSSHIAMe).
+  * Users of the `openSeSSHIAMe` class can authorize ingress on any port from
+    any IPv4 address or address range.
   * The service used to determine the current public IPv4 address could return
     an incorrect address, thus giving someone else access!
 
