@@ -116,9 +116,13 @@ TODO
     to `DescribeSecurityGroups` and `ListUserTags` are unavoidable.
   * Allow ports other than 22 and multiple ports. Might do this if and when the
     need arises.
-  * Allow for multiple address per IAM user. Ditto.
+  * Allow for multiple addresses per IAM user. Ditto.
   * Use PID file to handle concurrent runs for same IAM user.
   * Add option to use IPv6 addresses.
+  * Handle case where multiple openSeSSHIAMe users have the same public IP
+    address -- currently results in a boto3 exception about the rule already
+    existing.
+  * See `# TODO` in code for anything possibly missed here.
 
 License
 -------
