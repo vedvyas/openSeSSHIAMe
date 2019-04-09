@@ -93,7 +93,7 @@ config:
     Host foo
     HostName ...
     ...
-    ProxyCommand bash -c 'openSeSSHIAMe --verbose --config ...; sleep 1;
+    ProxyCommand bash -c 'openSeSSHIAMe --verbose --config ... && sleep 1 &&
                           exec nc %h %p'
 
 This technique should also work with autossh.
