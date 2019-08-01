@@ -2,6 +2,7 @@
 Description=Run openSeSSHIAMe-oneshot periodically
 
 [Timer]
+OnBootSec=1min
 OnUnitActiveSec=30min
 
 [Install]
